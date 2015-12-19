@@ -341,7 +341,7 @@ public class WeekView extends View {
         Rect rect = new Rect();
         mTimeTextPaint.getTextBounds("00 PM", 0, "00 PM".length(), rect);
         mTimeTextHeight = rect.height();
-        mHeaderMarginBottom = mTimeTextHeight / 2;
+        mHeaderMarginBottom = 0;//mTimeTextHeight / 2;
         initTextTimeWidth();
 
         // Measure settings for header row.
@@ -349,9 +349,9 @@ public class WeekView extends View {
         mHeaderTextPaint.setColor(mHeaderColumnTextColor);
         mHeaderTextPaint.setTextAlign(Paint.Align.CENTER);
         mHeaderTextPaint.setTextSize(mTextSize);
+        mHeaderTextPaint.setTypeface(Typeface.DEFAULT_BOLD);
         mHeaderTextPaint.getTextBounds("00 PM", 0, "00 PM".length(), rect);
         mHeaderTextHeight = rect.height();
-        mHeaderTextPaint.setTypeface(Typeface.DEFAULT_BOLD);
 
         // Prepare header background paint.
         mHeaderBackgroundPaint = new Paint();
@@ -466,11 +466,12 @@ public class WeekView extends View {
     }
 
     private void drawTimeColumnAndAxes(Canvas canvas) {
+        // Clip to paint in left column only
+        canvas.clipRect(0, mHeaderTextHeight + mHeaderRowPadding * 2, mHeaderColumnWidth, getHeight(), Region.Op.REPLACE);
+
         // Draw the background color for the header column.
         canvas.drawRect(0, mHeaderTextHeight + mHeaderRowPadding * 2, mHeaderColumnWidth, getHeight(), mHeaderColumnBackgroundPaint);
 
-        // Clip to paint in left column only
-        canvas.clipRect(0, mHeaderTextHeight + mHeaderRowPadding * 2, mHeaderColumnWidth, getHeight(), Region.Op.REPLACE);
         for (int i = 0; i < 24; i++) {
             float top = mHeaderTextHeight + mHeaderRowPadding * 2 + mCurrentOrigin.y + mHourHeight * i + mHeaderMarginBottom;
 
