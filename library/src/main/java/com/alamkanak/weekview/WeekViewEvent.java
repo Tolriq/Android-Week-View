@@ -65,12 +65,14 @@ public class WeekViewEvent {
      * @param startTime The time when the event starts.
      * @param endTime   The time when the event ends.
      */
-    public WeekViewEvent(long id, String name, String location, Calendar startTime, Calendar endTime) {
+    public WeekViewEvent(long id, String name, String location, Calendar startTime, Calendar endTime, String description, Object data) {
         this.mId = id;
         this.mName = name;
         this.mLocation = location;
         this.mStartTime = startTime;
         this.mEndTime = endTime;
+        this.mDescription = description;
+        this.mData = data;
     }
 
     /**
@@ -82,7 +84,7 @@ public class WeekViewEvent {
      * @param endTime   The time when the event ends.
      */
     public WeekViewEvent(long id, String name, Calendar startTime, Calendar endTime) {
-        this(id, name, null, startTime, endTime);
+        this(id, name, null, startTime, endTime, null, null);
     }
 
 

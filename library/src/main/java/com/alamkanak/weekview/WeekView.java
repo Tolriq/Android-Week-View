@@ -785,7 +785,9 @@ public class WeekView extends View {
 
         // Prepare the location of the event.
         if (event.getLocation() != null) {
-            bob.append(" - ");
+            if (bob.length() > 0) {
+                bob.append(" - ");
+            }
             bob.append(event.getLocation());
         }
 
@@ -808,13 +810,35 @@ public class WeekView extends View {
             int availableLineCount = availableHeight / lineHeight;
             do {
                 // Ellipsize text to fit into event rect.
-                textLayout = new StaticLayout(TextUtils.ellipsize(bob, mEventTextPaint, availableLineCount * availableWidth, TextUtils.TruncateAt.END), mEventTextPaint, (int) (rect.right - originalLeft - mEventPadding * 2), Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
-
+                textLayout = new StaticLayout(TextUtils.ellipsize(bob, mEventTextPaint, availableLineCount * availableWidth, TextUtils.TruncateAt.END), mEventTextPaint, availableWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
                 // Reduce line count.
                 availableLineCount--;
 
                 // Repeat until text is short enough.
             } while (textLayout.getHeight() > availableHeight);
+
+            if (availableLineCount < 1) {
+                availableLineCount = availableHeight / lineHeight;
+                bob.delete(0, bob.length());
+                if (event.getName() != null) {
+                    bob.append(event.getName());
+                    bob.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, bob.length(), 0);
+                }
+                // Prepare the location of the event.
+                if (event.getLocation() != null) {
+                    if (bob.length() > 0) {
+                        bob.append(" - ");
+                    }
+                    bob.append(event.getLocation());
+                }
+                do {
+                    // Ellipsize text to fit into event rect.
+                    textLayout = new StaticLayout(TextUtils.ellipsize(bob, mEventTextPaint, availableLineCount * availableWidth, TextUtils.TruncateAt.END), mEventTextPaint, availableWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+                    // Reduce line count.
+                    availableLineCount--;
+                    // Repeat until text is short enough.
+                } while (textLayout.getHeight() > availableHeight);
+            }
 
             // Draw text.
             canvas.save();
@@ -823,7 +847,6 @@ public class WeekView extends View {
             canvas.restore();
         }
     }
-
 
     /**
      * A class to hold reference to the events and their visual representation. An EventRect is
@@ -965,7 +988,7 @@ public class WeekView extends View {
             Calendar endTime = (Calendar) event.getStartTime().clone();
             endTime.set(Calendar.HOUR_OF_DAY, 23);
             endTime.set(Calendar.MINUTE, 59);
-            WeekViewEvent event1 = new WeekViewEvent(event.getId(), event.getName(), event.getLocation(), event.getStartTime(), endTime);
+            WeekViewEvent event1 = new WeekViewEvent(event.getId(), event.getName(), event.getLocation(), event.getStartTime(), endTime, event.getDescription(), event.getData());
             event1.setColor(event.getColor());
             mEventRects.add(new EventRect(event1, event, null));
 
@@ -991,7 +1014,7 @@ public class WeekView extends View {
             Calendar startTime = (Calendar) event.getEndTime().clone();
             startTime.set(Calendar.HOUR_OF_DAY, 0);
             startTime.set(Calendar.MINUTE, 0);
-            WeekViewEvent event2 = new WeekViewEvent(event.getId(), event.getName(), event.getLocation(), startTime, event.getEndTime());
+            WeekViewEvent event2 = new WeekViewEvent(event.getId(), event.getName(), event.getLocation(), startTime, event.getEndTime(), event.getDescription(), event.getData());
             event2.setColor(event.getColor());
             mEventRects.add(new EventRect(event2, event, null));
         } else {
