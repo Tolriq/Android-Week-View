@@ -28,6 +28,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.SoundEffectConstants;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.widget.OverScroller;
 
 import java.text.SimpleDateFormat;
@@ -89,6 +90,7 @@ public class WeekView extends View {
     private Calendar mFirstVisibleDay;
     private Calendar mLastVisibleDay;
     private int mDefaultEventColor;
+    private int mMinimalFlingVelocity;
 
     // Attributes and their default values.
     private int mHourHeight = 50;
@@ -320,7 +322,7 @@ public class WeekView extends View {
         } finally {
             a.recycle();
         }
-
+        mMinimalFlingVelocity = ViewConfiguration.get(mContext).getScaledMinimumFlingVelocity();
         init();
     }
 
@@ -1857,7 +1859,7 @@ public class WeekView extends View {
 
         if (nearestOrigin != 0 && mCurrentOrigin.x - nearestOrigin <= getXMaxLimit() && mCurrentOrigin.x - nearestOrigin >= getXMinLimit()) {
             mScroller.forceFinished(true);
-            mScroller.startScroll((int) mCurrentOrigin.x, (int) mCurrentOrigin.y, -nearestOrigin, 0, 50);
+            mScroller.startScroll((int) mCurrentOrigin.x, (int) mCurrentOrigin.y, -nearestOrigin, 0, (int) ((Math.abs(nearestOrigin) / mWidthPerDay) * 1500));
             ViewCompat.postInvalidateOnAnimation(WeekView.this);
         }
 
@@ -1870,7 +1872,9 @@ public class WeekView extends View {
     public void computeScroll() {
         super.computeScroll();
 
-        if (mScroller.isFinished()) {
+        if (!mScroller.isFinished() && (mCurrentFlingDirection != Direction.NONE) && (mScroller.getCurrVelocity() <= mMinimalFlingVelocity)) {
+            goToNearestOrigin();
+        } else if (mScroller.isFinished()) {
             if (mCurrentFlingDirection != Direction.NONE) {
                 // Snap to day after fling is finished.
                 goToNearestOrigin();
