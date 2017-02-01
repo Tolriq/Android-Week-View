@@ -15,6 +15,7 @@ public class WeekViewEvent {
     private String mDescription;
     private Object mData;
     private int mColor;
+    private String mPrefix;
 
     public WeekViewEvent() {
 
@@ -65,7 +66,7 @@ public class WeekViewEvent {
      * @param startTime The time when the event starts.
      * @param endTime   The time when the event ends.
      */
-    public WeekViewEvent(long id, String name, String location, Calendar startTime, Calendar endTime, String description, Object data) {
+    public WeekViewEvent(long id, String name, String location, Calendar startTime, Calendar endTime, String description, Object data, String prefix) {
         this.mId = id;
         this.mName = name;
         this.mLocation = location;
@@ -73,6 +74,7 @@ public class WeekViewEvent {
         this.mEndTime = endTime;
         this.mDescription = description;
         this.mData = data;
+        this.mPrefix = prefix;
     }
 
     /**
@@ -84,7 +86,7 @@ public class WeekViewEvent {
      * @param endTime   The time when the event ends.
      */
     public WeekViewEvent(long id, String name, Calendar startTime, Calendar endTime) {
-        this(id, name, null, startTime, endTime, null, null);
+        this(id, name, null, startTime, endTime, null, null, null);
     }
 
 
@@ -110,6 +112,14 @@ public class WeekViewEvent {
 
     public void setName(String name) {
         this.mName = name;
+    }
+
+    public String getPrefix() {
+        return mPrefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.mPrefix = prefix;
     }
 
     public Object getData() {

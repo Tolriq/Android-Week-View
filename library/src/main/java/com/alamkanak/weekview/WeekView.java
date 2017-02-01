@@ -19,6 +19,7 @@ import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -778,15 +779,23 @@ public class WeekView extends View {
 
         // Prepare the name of the event.
         SpannableStringBuilder bob = new SpannableStringBuilder();
+
+        if (event.getPrefix() != null && !event.getPrefix().isEmpty()) {
+            bob.append(event.getPrefix());
+            bob.append(" ");
+            bob.setSpan(new ForegroundColorSpan(Color.parseColor("#FF0000")), 0, bob.length(), 0);
+        }
+
         if (event.getName() != null) {
+            int start = bob.length();
             bob.append(event.getName());
-            bob.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, bob.length(), 0);
+            bob.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, bob.length(), 0);
         }
 
         // Prepare the location of the event.
         if (event.getLocation() != null) {
             if (bob.length() > 0) {
-                bob.append(" - ");
+                bob.append(" • ");
             }
             bob.append(event.getLocation());
         }
@@ -820,9 +829,16 @@ public class WeekView extends View {
             if (availableLineCount < 1) {
                 availableLineCount = availableHeight / lineHeight;
                 bob.delete(0, bob.length());
+                if (event.getPrefix() != null && !event.getPrefix().isEmpty()) {
+                    bob.append(event.getPrefix());
+                    bob.append(" ");
+                    bob.setSpan(new ForegroundColorSpan(Color.parseColor("#FF0000")), 0, bob.length(), 0);
+                }
+
                 if (event.getName() != null) {
+                    int start = bob.length();
                     bob.append(event.getName());
-                    bob.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, bob.length(), 0);
+                    bob.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, bob.length(), 0);
                 }
                 // Prepare the location of the event.
                 if (event.getLocation() != null) {
@@ -988,7 +1004,7 @@ public class WeekView extends View {
             Calendar endTime = (Calendar) event.getStartTime().clone();
             endTime.set(Calendar.HOUR_OF_DAY, 23);
             endTime.set(Calendar.MINUTE, 59);
-            WeekViewEvent event1 = new WeekViewEvent(event.getId(), event.getName(), event.getLocation(), event.getStartTime(), endTime, event.getDescription(), event.getData());
+            WeekViewEvent event1 = new WeekViewEvent(event.getId(), event.getName(), event.getLocation(), event.getStartTime(), endTime, event.getDescription(), event.getData(), event.getPrefix());
             event1.setColor(event.getColor());
             mEventRects.add(new EventRect(event1, event, null));
 
@@ -1014,7 +1030,7 @@ public class WeekView extends View {
             Calendar startTime = (Calendar) event.getEndTime().clone();
             startTime.set(Calendar.HOUR_OF_DAY, 0);
             startTime.set(Calendar.MINUTE, 0);
-            WeekViewEvent event2 = new WeekViewEvent(event.getId(), event.getName(), event.getLocation(), startTime, event.getEndTime(), event.getDescription(), event.getData());
+            WeekViewEvent event2 = new WeekViewEvent(event.getId(), event.getName(), event.getLocation(), startTime, event.getEndTime(), event.getDescription(), event.getData(), event.getPrefix());
             event2.setColor(event.getColor());
             mEventRects.add(new EventRect(event2, event, null));
         } else {
