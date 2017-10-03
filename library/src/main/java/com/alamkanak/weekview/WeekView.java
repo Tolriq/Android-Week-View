@@ -912,7 +912,7 @@ public class WeekView extends View {
 
         // Get more events if the month is changed.
         if (mEventRects == null)
-            mEventRects = new ArrayList<EventRect>();
+            mEventRects = new ArrayList<>();
         if (mWeekViewLoader == null && !isInEditMode())
             throw new IllegalStateException("You must provide a MonthChangeListener");
 
@@ -968,7 +968,7 @@ public class WeekView extends View {
 
         // Prepare to calculate positions of each events.
         List<EventRect> tempEvents = mEventRects;
-        mEventRects = new ArrayList<EventRect>();
+        mEventRects = new ArrayList<>();
 
         // Iterate through each day with events to calculate the position of the events.
         while (tempEvents.size() > 0) {
@@ -1080,7 +1080,7 @@ public class WeekView extends View {
      */
     private void computePositionOfEvents(List<EventRect> eventRects) {
         // Make "collision groups" for all events that collide with others.
-        List<List<EventRect>> collisionGroups = new ArrayList<List<EventRect>>();
+        List<List<EventRect>> collisionGroups = new ArrayList<>();
         for (EventRect eventRect : eventRects) {
             boolean isPlaced = false;
             outerLoop:
@@ -1094,7 +1094,7 @@ public class WeekView extends View {
                 }
             }
             if (!isPlaced) {
-                List<EventRect> newGroup = new ArrayList<EventRect>();
+                List<EventRect> newGroup = new ArrayList<>();
                 newGroup.add(eventRect);
                 collisionGroups.add(newGroup);
             }
@@ -1113,7 +1113,7 @@ public class WeekView extends View {
      */
     private void expandEventsToMaxWidth(List<EventRect> collisionGroup) {
         // Expand the events to maximum possible width.
-        List<List<EventRect>> columns = new ArrayList<List<EventRect>>();
+        List<List<EventRect>> columns = new ArrayList<>();
         columns.add(new ArrayList<EventRect>());
         for (EventRect eventRect : collisionGroup) {
             boolean isPlaced = false;
@@ -1128,7 +1128,7 @@ public class WeekView extends View {
                 }
             }
             if (!isPlaced) {
-                List<EventRect> newColumn = new ArrayList<EventRect>();
+                List<EventRect> newColumn = new ArrayList<>();
                 newColumn.add(eventRect);
                 columns.add(newColumn);
             }
